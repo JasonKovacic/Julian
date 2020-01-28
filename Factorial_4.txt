@@ -12,17 +12,69 @@ n! = (n)(n-1)(n-2)...(2)(1)
 
 Factorial of n:
 
-take in number (n)
-assign value n to a variable
-multiply variable by a number one less than the variable
-multiply result by a number two less than the variable
-multiply result by a number three less than the variable
+Print out statement asking for a number
+take in number (n) as an integer
+
+Assign variable to total value (total)
+
+
+multiply n by a number one less than n (n-1)
+set total to equal the answer
+multiply result by a number two less than n (n-2)
+set total to equal the answer
+multiply result by a number three less than n (n-3)
+set total to equal the answer
 .
 .
+continue this process until the multiplying factor is 1
 .
 multiply result by 3
+set total to equal the answer
 multiply result by 2
+set total to equal the answer
 multiply result by 1
+set total to equal the answer
 
-Final result is the answer
-Output the answer
+
+Final result of everything multiplied together is the answer (total)
+
+Output the answer (print total)
+
+
+
+
+
+Alternative Factorial Method:
+
+
+Print out statement asking for a number
+take in number (n) as an integer
+
+Assign variable to total value (total)
+
+
+multiply n by 1
+set total to equal the answer
+multiply result by 2
+set total to equal the answer
+multiply result by 3
+set total to equal the answer
+.
+.
+continue this process until the multiplying factor is (n-1)
+.
+multiply result by (n-3)
+set total to equal the answer
+multiply result by (n-2)
+set total to equal the answer
+multiply result by (n-1)
+set total to equal the answer
+
+We can also use an index variable called i, to represent the number we are multiplying by
+set i equal to 1
+incrementally add 1 to i with each iteration
+when i = (n-1), we stop multiplying
+
+Final result of everything multiplied together is the answer (total)
+
+Output the answer (print total)
