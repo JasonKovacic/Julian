@@ -8,3 +8,21 @@ Factorial of 4:
 Factorial of n:
 
 n! = (n)(n-1)(n-2)...(2)(1)
+
+
+Factorial of n:
+
+take in number (n)
+assign value n to a variable
+multiply variable by a number one less than the variable
+multiply result by a number two less than the variable
+multiply result by a number three less than the variable
+.
+.
+.
+multiply result by 3
+multiply result by 2
+multiply result by 1
+
+Final result is the answer
+Output the answer
