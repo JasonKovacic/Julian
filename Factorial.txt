@@ -1,0 +1,18 @@
+
+Function for a Factorial of n:
+
+n! = (n)(n-1)(n-2)...(2)(1)
+
+
+Factorial of n:
+
+Step 1) print out statement asking for a number
+Step 2) prompt user for number (num1) as an integer
+Step 3) define a variable num2
+Step 4) multiply num1 by (num1-1) and set to num2
+Step 5) multiply num2 by (num1-2) and set to num2
+Step 6) repeat this process until (num1-x) = 1
+Step 7) print num2
+
+
+
