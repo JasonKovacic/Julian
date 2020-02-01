@@ -1,4 +1,4 @@
-# Script to find the factorial of a number
+# Script to find the factorial of a number iteratively
 
 # prompts the user and inputs the number 
 print("This program finds the factorial of a number.")
@@ -13,8 +13,6 @@ num2 = num1
 # for loop to multiply multiple times
 for i in range(1,n):
   num2 = num2 * i
-#    if i == n:
-#       break
 
 # prints the answer out  
 print (f"The Factorial of", num1, "is", num2)
