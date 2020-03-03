@@ -1,6 +1,9 @@
 
 Haskell Notes
 
+
+CHAPTER 1-2 :  STARTING OUT
+
 Lazy Functions vs Strict functions (function’)
 
 definition  - when a function doesn’t take parameters, that function is a definition
@@ -125,6 +128,8 @@ infix function  -  function called with infix notation
         *
         /
         ==
+        :t
+        ::
 
 infix notation  -  putting the function name inbewtween two arguments
         
@@ -201,21 +206,278 @@ tuples  -  like lists, using () instead of []
 
 fst  -  takes a pair and returns its first component
 
+        ghci> fst (a,b)
+        a
+
 snd  -  takes a pair and returns its second component
+
+        ghci> snd (a,b)
+        b
 
 zip  -  takes two lists and puts them together in one list by joining the elements into pairs
 
-:t  -  use before and expression to return the types
+        ghci> zip [1,2,3,4,5] [a..z]
+        [(1,a),(2,b),(3,c),(4,d),(5,e)]
+
+        ghci> zip "Hello World" [1,2,3,4,5]
+        [('H',1),('e',2),('l',3),('l',4),('o',5)]
+
+CHAPTER 3 : TYPES AND TYPECLASSES
+
+:t  -  use before an expression to return the type/types
 
         ghci> :t 'a'
         'a' :: Char
 
-        ghci> :t 4 == 5
-        4 == 5 :: Bool
-    
+        ghci> :t True
+        Bool
+
+        ghci> :t 2 == 2
+        2 == 2 :: Bool
+
+        ghci> :t ('a', 4 == 5)
+        ('a', 4 ==5) :: (Char, Bool)
+
 ::  -  "has type of"
         
         4 == 5 :: Bool
         [1,2,3] :: [int]
 
+** Types are written in Captial Case
 
+Int  -  type, represents an integer, bounded, max = 2147483647, min = -max
+
+Integer  -  type, represents an integer, unbounded
+
+Float  -  type, real floating point with single precision
+
+Double  -  type, real floating point with doubel precision
+
+Bool  -  type, respresents an boolean, only values are True or False 
+
+Char  -  type, represents a character, denoted by single quotes
+
+Ordering  -  type, can be GT, LT, or EQ, (greater than, less than, equal to)
+
+string - list of characters
+
+        "Hello" == ["H","e","l","l","o"]
+
+()  -  type representing an empty tuple 
+        ** tuples are types 
+
+type variable  -  variable to represent a type, any type
+
+        ghci> :t zip
+        zip :: [a] -> [b] -> [(a),(b)]
+
+        ** a and b are the type variables
+
+typeclass  -  interface that defines some behavior
+
+class constraint  -  everything written before the -> symbol
+
+        ghci> :t (==)  
+        (==) :: (Eq a) => a -> a -> Bool
+
+        ** Eq class is the class constraint
+
+Eq  -  typeclass for types that support equality testing, uses == and /= functions
+        types : (), Bool, Char, Int, Integer, Float, Double
+        ghci> 
+
+Ord  -  typeclass for types that have ordering, 
+        types : (), Bool, Char, Int, Integer, Float, Double
+        subset of Eq
+        <, <=, >, >=
+
+compare  -  function takes two Ord members of the same type and returns an ordering
+
+        ghci> compare 5 2
+        GT
+
+        ghci> 2 'compare' 2
+        EQ
+
+        ghci> 2 'compare' 5
+        LT
+
+Show  -  typeclass for types that can be represented by strings
+        types : (), Bool, Char, Int, Integer, Float, Double
+
+show  -  function that takes a value whose type is a member of show and presents it to us as a string
+
+        ghci> show True
+        "True"
+
+        ghci> show 3.141
+        "3.141"
+
+Read  -  typeclass for types that cannot be represented by strings
+        types : ????????
+
+read  -  function that takes a string and returns a type which is a member of Read
+
+        ghci> read "True" || False
+        True
+
+        ghci> read "2" + 2
+        4
+
+        ghci> read "0":[1,2,3,4,5]
+        [0,1,2,3,4,5]
+
+type annotations  -  a way of explicitly saying what type an expression should be
+
+        ghci> read "5" :: Int  
+        5  
+        
+        ghci> read "5" :: Float  
+        5.0  
+        
+        ghci> (read "5" :: Float) * 4  
+        20.0  
+        
+        ghci> read "[1,2,3,4,5]" :: [Int]  
+        [1,2,3,4,5]  
+        
+        ghci> read "(3, 'b')" :: (Int, Char)  
+        (3, 'b')  
+
+Enum  -  typeclass for sequentially ordered types, types that can be enumerated
+        types : (), Bool, Char, Ordering, Int, Integer, Float, Double
+
+succ  -  function that takes anything that has a defined successor and returns that successor
+
+        ghci> succ 1
+        2
+
+        ghci> succ 3.141
+        4.141
+    
+pred  -  function that takes anything that has a defined predecessor and returns that predecessor
+
+        ghci> pred 10
+        9
+
+        ghci> pred 0
+        -1
+
+Bounded  -  typeclass whose members have an upper and lower bound
+        types : ?????????
+        ** all tuples are part of Bounded, if the components are also in it
+
+Num  -  typeclass whose members have the property of acting like numbers
+        types : Int, Integer, Float, Double
+        subset of Show and Eq
+    
+Integral  -  typeclass whose members include integral numbers
+        types : Int, Integer
+        subset of Num
+
+Floating  -  typeclass whose members include floating point numbers
+        types : Float, Double
+        subset of Num
+
+fromIntegral  -  function that converts from Integral to Num
+ 
+        ghci> fromIntegral :: (Num b, Integral a) => a -> b
+
+        ghci> Example needed
+
+CHAPTER 4: SYNTAX IN FUNCTIONS
+
+pattern matching
+
+guards  -  way of testing if a property of a value is true or False
+        -  indicated by pipes folling a functions name and parameters
+        -  usually indented to the right and lined up for several conditions
+        -  if it evaluates to True, the corresponding function body is used
+        -  if it evaluates to False, the corresponding function body is skipped
+        -  last guard is usually called otherwise, is a catch all
+
+        bmiTell :: (RealFloat a) => a -> a -> String  
+        bmiTell weight height  
+            | weight / height ^ 2 <= 18.5 = "You're underweight, you emo, you!"  
+            | weight / height ^ 2 <= 25.0 = "You're supposedly normal. Pffft, I bet you're ugly!"  
+            | weight / height ^ 2 <= 30.0 = "You're fat! Lose some weight, fatty!"  
+            | otherwise                   = "You're a whale, congratulations!" 
+
+where bindings -  keyword 'where' you can put on the line after the guards
+               -  define names or functions
+               -  where puts the expression first and the binding after
+
+        bmiTell :: (RealFloat a) => a -> a -> String  
+        bmiTell weight height  
+            | bmi <= 18.5 = "You're underweight, you emo, you!"  
+            | bmi <= 25.0 = "You're supposedly normal. Pffft, I bet you're ugly!"  
+            | bmi <= 30.0 = "You're fat! Lose some weight, fatty!"  
+            | otherwise                   = "You're a whale, congratulations!" 
+            where bmi = weight / height ^ 2
+
+        bmiTell :: (RealFloat a) => a -> a -> String  
+        bmiTell weight height  
+            | bmi <= skinny = "You're underweight, you emo, you!"  
+            | bmi <= normal = "You're supposedly normal. Pffft, I bet you're ugly!"  
+            | bmi <= fat    = "You're fat! Lose some weight, fatty!"  
+            | otherwise     = "You're a whale, congratulations!"  
+            where bmi = weight / height ^ 2  
+                skinny = 18.5  
+                normal = 25.0  
+                fat = 30.0 
+
+let bindings  -  keyword 'let' you can put expressions with
+              -  let <bindings> in <expression>
+              -  let puts the bindings first and the expression after
+
+        ghci> 4 * (let a = 9 in a + 1) + 2  
+        42
+
+        ghci> [let factorial x = product [1..x] in (factorial 0, factorial 1, factorial 4, factorial 23)]
+        [(1,1,24,25852016738884976640000)]
+        
+        ** you can bind several variables inline using semicolons
+        ghci> (let a = 1; b = 2; c = 3 in a+b+c, let foo = "Hello "; bar = "World!" in foo ++ bar)
+        (6,"Hello World!")
+
+        ** you can put let binding inside list comprehensions
+        ** omit the 'in' part of the let binding
+        calcBmis :: (RealFloat a) => [(a, a)] -> [a]  
+        calcBmis xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2] 
+
+
+case expression  -  expressions
+
+        ** syntax for case expressions:
+        case <expression> of <pattern> -> result  
+                             <pattern> -> result  
+                             <pattern> -> result  
+
+        head' :: [a] -> a  
+        head' xs = case xs of [] -> error "No head for empty lists!"  
+                            (x:_) -> x  
+
+        describeList :: [a] -> String  
+        describeList xs = "The list is " ++ case xs of [] -> "empty."  
+                                                    [x] -> "a singleton list."   
+                                                    xs -> "a longer list." 
+
+CHAPTER 5 : RECURSION
+
+recursion  -  way of defining functions in which the function is applied inside its own definition
+
+        factorial :: (Integral a) => a -> a
+        factorial 0 = 0
+        factorial 1 = 1
+        factorial n = factorial (n - 2) * factorial (n - 1)
+
+edge condition  -  an element/s in a recursive definition defined non-recursively
+        
+        factorial :: (Integral a) => a -> a
+        factorial 0 = 1
+        factorial n = n * factorial (n - 1)
+
+** no for loops or while loops in Haskell
+
+maximum  -  function that takes a list of things that can me ordered and returns the biggest of them
+ 
