@@ -141,7 +141,7 @@ prefix function  -  functions name followed by parameters
         ghci> sum 3 4
         7
 
-        ghci> 
+
 ** putting ''s around a prefix function allows it to be used as an infix function
 
         ghci> 3 'elem' [1,2,3]
@@ -466,18 +466,80 @@ CHAPTER 5 : RECURSION
 
 recursion  -  way of defining functions in which the function is applied inside its own definition
 
-        factorial :: (Integral a) => a -> a
-        factorial 0 = 0
-        factorial 1 = 1
-        factorial n = factorial (n - 2) * factorial (n - 1)
+        fibonacci :: (Integral a) => a -> a
+        fibonacci 0 = 0
+        fibonacci 1 = 1
+        fibonacci n = fibonacci (n - 2) * fibonacci (n - 1)
 
-edge condition  -  an element/s in a recursive definition defined non-recursively
-        
+edge condition/case  -  element/s in a recursive definition defined non-recursively
+                     -  for lists, the edge case is most often the empty list
+                     -  for trees, the edge case is usually a node that doesn't have any children
+                     -  think of when a recursive solution doesn't apply, see if you can use that as an edge case
+
         factorial :: (Integral a) => a -> a
-        factorial 0 = 1
+-->     factorial 0 = 1
         factorial n = n * factorial (n - 1)
 
 ** no for loops or while loops in Haskell
 
 maximum  -  function that takes a list of things that can me ordered and returns the biggest of them
  
+        maximum' :: (Ord a) => [a] -> a  
+        maximum' [] = error "maximum of empty list"  
+        maximum' [x] = x  
+        maximum' (x:xs)   
+                | x > maxTail = x  
+                | otherwise = maxTail  
+                where maxTail = maximum' xs 
+
+functions implemented using recursion:
+
+        replicate' :: (Num i, Ord i) => i -> a -> [a]  
+        replicate' n x  
+                | n <= 0    = []  
+                | otherwise = x:replicate' (n-1) x  
+
+        take' :: (Num i, Ord i) => i -> [a] -> [a]  
+        take' n _  
+                | n <= 0 = []  
+        take' _ [] = []  
+        take' n (x:xs) = x : take' (n-1) xs 
+
+        reverse' :: [a] -> [a]  
+        reverse' [] = []  
+        reverse' (x:xs) = reverse' xs ++ [x] 
+
+        repeat' :: a -> [a]
+        repeat; x = x:repeat' x
+
+        zip' :: [a] -> [b] -> [(a,b)]  
+        zip' _ [] = []  
+        zip' [] _ = []  
+        zip' (x:xs) (y:ys) = (x,y):zip' xs ys  
+
+        elem' :: (Eq a) => a -> [a] -> Bool  
+        elem' a [] = False  
+        elem' a (x:xs)  
+                | a == x    = True  
+                | otherwise = a `elem'` xs   
+
+quicksort  -  function which sorts a list in ascending order
+
+        quicksort :: (Ord a) => [a] -> [a]  
+        quicksort [] = []  
+        quicksort (x:xs) =   
+        let smallerSorted = quicksort [a | a <- xs, a <= x]  
+                biggerSorted = quicksort [a | a <- xs, a > x]  
+        in  smallerSorted ++ [x] ++ biggerSorted 
+
+type signature  -  ????
+
+CHAPTER 6 : HIGHER ORDER FUNCTIONS
+
+higher order function  -  a function that 
+                       -  take functions as parameters OR
+                       -  return functions as return values
+
+** every function in Haskell only takes one parameter technically
+
+curried function  -  
