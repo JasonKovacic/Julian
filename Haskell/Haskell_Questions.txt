@@ -1,0 +1,34 @@
+Haskell Questions
+
+Lazy Functions vs Strict functions (function’)
+
+Strict Function definition?
+
+Tuples questions
+		always [(),(),()]?  or ()?
+		
+Static Type as opposed to what?
+
+“All types covered so far except for functions are a part of Show”
+http://learnyouahaskell.com/types-and-typeclasses
+
+
+Read vs Show
+
+Check definition of Read typeclass in Haskell_Notes.txt line 308
+
+Is () in Eq Ord and Show typeclasses ?
+Need to get Typeclasses and subsets right in my head
+
+Haskell 98 report worth reading?
+
+difference between -> and => i?
+
+are :: and :t infix functions?  line 131
+
+<-  what does this mean?  arrow pointing left?
+
+edge condition == base case?
+
+type signature definition?
+
