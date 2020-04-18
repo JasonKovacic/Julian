@@ -116,11 +116,14 @@ product  -  takes a list of numbers and returns their product
 elem  -  takes a thing and a list of things and returns True if the thing is in the list 
     False if the thing is not in the list.  Usually used as an infix function
 		
-		ghci>  1 ‘elem’ [1,2,3,4,5]
+		ghci> 1 ‘elem’ [1,2,3,4,5]
 		True
 		
 		ghci> 6 ‘elem’ [1,2,3,4,5]
 		False
+
+                ghci> elem 1 [1,2,3,4,5]
+                True
 
 infix function  -  function called with infix notation
         + 
@@ -141,7 +144,6 @@ prefix function  -  functions name followed by parameters
         ghci> sum 3 4
         7
 
-
 ** putting ''s around a prefix function allows it to be used as an infix function
 
         ghci> 3 'elem' [1,2,3]
@@ -151,6 +153,9 @@ prefix function  -  functions name followed by parameters
 
         ghci> (+) 2 2
         5
+
+        ghci> (/10) 200
+        20
     
 range  -  makes a list that is an arithmetic sequence of elements
 		
@@ -171,9 +176,10 @@ cycle  -  takes a list and cycles it into an infinite list.  used with take
 		ghci> take 12 (cycle "LOL ")
 		"LOL LOL LOL "   
 
-repeat  -   takes and element and produces a list of just that element
+repeat  -  takes and element and produces a list of just that element
+        -  like cycling a list with only one element
 		
-		ghci> take 10 (repeat 5)
+                ghci> take 10 (repeat 5)
 		[5,5,5,5,5,5,5,5,5,5]
 
 replicate  -  replicate x times y
@@ -224,7 +230,7 @@ zip  -  takes two lists and puts them together in one list by joining the elemen
 
 CHAPTER 3 : TYPES AND TYPECLASSES
 
-:t  -  use before an expression to return the type/types
+:t  -  use before an expression to return the type signature
 
         ghci> :t 'a'
         'a' :: Char
@@ -238,6 +244,9 @@ CHAPTER 3 : TYPES AND TYPECLASSES
         ghci> :t ('a', 4 == 5)
         ('a', 4 ==5) :: (Char, Bool)
 
+        ghci> :t fromIntegral
+        fromIntegral :: (Integral a, Num b) => a -> b
+
 ::  -  "has type of"
         
         4 == 5 :: Bool
@@ -247,7 +256,7 @@ CHAPTER 3 : TYPES AND TYPECLASSES
 
 Int  -  type, represents an integer, bounded, max = 2147483647, min = -max
 
-Integer  -  type, represents an integer, unbounded
+Integer  -  type, represents an integer, unbounded (Int is more efficient)
 
 Float  -  type, real floating point with single precision
 
@@ -272,10 +281,11 @@ type variable  -  variable to represent a type, any type
         zip :: [a] -> [b] -> [(a),(b)]
 
         ** a and b are the type variables
+        ** a and b can be any type
 
 typeclass  -  interface that defines some behavior
 
-class constraint  -  everything written before the -> symbol
+class constraint  -  everything written before the => symbol
 
         ghci> :t (==)  
         (==) :: (Eq a) => a -> a -> Bool
@@ -306,7 +316,7 @@ Show  -  typeclass for types that can be represented by strings
         types : (), Bool, Char, Int, Integer, Float, Double
 
 show  -  function that takes a value whose type is a member of show and presents it to us as a string
-
+      -  turns something into a string
         ghci> show True
         "True"
 
@@ -314,9 +324,10 @@ show  -  function that takes a value whose type is a member of show and presents
         "3.141"
 
 Read  -  typeclass for types that cannot be represented by strings
-        types : ????????
+        types : ??
 
 read  -  function that takes a string and returns a type which is a member of Read
+      -  turns a string into another type
 
         ghci> read "True" || False
         True
@@ -328,7 +339,7 @@ read  -  function that takes a string and returns a type which is a member of Re
         [0,1,2,3,4,5]
 
 type annotations  -  a way of explicitly saying what type an expression should be
-
+                  -  adding :: to the end of an expression and then specifying a type
         ghci> read "5" :: Int  
         5  
         
@@ -354,6 +365,9 @@ succ  -  function that takes anything that has a defined successor and returns t
 
         ghci> succ 3.141
         4.141
+
+        ghci> succ 'M'
+        'N'
     
 pred  -  function that takes anything that has a defined predecessor and returns that predecessor
 
@@ -363,34 +377,43 @@ pred  -  function that takes anything that has a defined predecessor and returns
         ghci> pred 0
         -1
 
+        ghci> pred 'z'
+        'y'
+
 Bounded  -  typeclass whose members have an upper and lower bound
-        types : ?????????
-        ** all tuples are part of Bounded, if the components are also in it
+        types : ??
+                Bool (False, True)
+                Int (-2147483647, 2147483647) 
+                Char ('\NUL', '\1114111')
+                Ordering (LT, GT)
+
+** all tuples are part of Bounded, if the components are also in it
 
 Num  -  typeclass whose members have the property of acting like numbers
-        types : Int, Integer, Float, Double
+        types : Int, Integer, Float, Double.
         subset of Show and Eq
     
 Integral  -  typeclass whose members include integral numbers
-        types : Int, Integer
-        subset of Num
+        types : Int, Integer.
+        subset of Enum
 
 Floating  -  typeclass whose members include floating point numbers
-        types : Float, Double
+        types : Float, Double.
         subset of Num
 
 fromIntegral  -  function that converts from Integral to Num
  
-        ghci> fromIntegral :: (Num b, Integral a) => a -> b
+        fromIntegral :: (Num b, Integral a) => a -> b
 
-        ghci> Example needed
+        ghci> fromIntegral (length [1,2,3,4,5]) + 3.2
+        8.2
 
 CHAPTER 4: SYNTAX IN FUNCTIONS
 
 pattern matching
 
 guards  -  way of testing if a property of a value is true or False
-        -  indicated by pipes folling a functions name and parameters
+        -  indicated by pipes following a functions name and parameters
         -  usually indented to the right and lined up for several conditions
         -  if it evaluates to True, the corresponding function body is used
         -  if it evaluates to False, the corresponding function body is skipped
@@ -462,6 +485,8 @@ case expression  -  expressions
                                                     [x] -> "a singleton list."   
                                                     xs -> "a longer list." 
 
+
+
 CHAPTER 5 : RECURSION
 
 recursion  -  way of defining functions in which the function is applied inside its own definition
@@ -532,7 +557,15 @@ quicksort  -  function which sorts a list in ascending order
                 biggerSorted = quicksort [a | a <- xs, a > x]  
         in  smallerSorted ++ [x] ++ biggerSorted 
 
-type signature  -  ????
+type signature  -  a line describing the type of a variable
+
+        ghci> :t (*)
+        (*) :: Num a => a -> a -> a
+
+        ghci> :t fromIntegral
+        fromIntegral :: (Integral a, Num b) => a -> b
+
+
 
 CHAPTER 6 : HIGHER ORDER FUNCTIONS
 
@@ -542,4 +575,145 @@ higher order function  -  a function that
 
 ** every function in Haskell only takes one parameter technically
 
-curried function  -  
+curried function  -  function taking in multiple arguments as a tuple as its argument
+                  -  takes one parameter and returns a function with one less parameter in its argument
+
+partially applied function  -  supplying fewer arguments than expected to a function that takes multiple arguments
+                            -  get back a function that expects the remaining results
+                            -  get back a function that takes as many paramaters as we left out
+
+        ghci> max 4 5
+        5
+
+        ghci> (max 4) 5
+
+function application  -  using a function on something
+                      -  function x, applying function to x
+                      -  x is applied as an argument to f
+                      -  putting a space between two things is function application
+
+sections  -  infix funcitions can be partially applied by using sections
+          -  to section an infix function, surround it with parentheses and suppy a parameter to one skipped
+
+        ghci> (/10) 200
+        20
+
+        ghci> (10/) 200
+        5.0e-2
+
+map  -  takes a function and a list
+     -  applies the function to every element in the list, producing a new list
+
+        ghci> map (+2) [1,2,3,4,5]
+        [3,4,5,6,7]
+
+        ghci> map (replicate 3) [1,2,3,4,5]
+        [(1,1,1),(2,2,2),(3,3,3),(4,4,4),(5,5,5)]
+
+predicate  -  function that returns a boolean value
+
+filter  -  function that takes a predicate and a list
+        -  applies the predicate to the list and returns a list of elements that satisfy the predicate
+        -  doesn't work on infinite lists  (takeWhile does though)
+
+        ghci> filter (>3) [1,2,3,4,5]
+        [4,5]
+
+        ghci> filter even [1,2,3,4,5]
+        [2,4]
+
+takeWhile  -  fucntion that takes a predicate and a list
+           -  starting at the beginning of the list, returns elements while the predicate holds true
+           -  stops at first element where predicate doesn't hold
+           -  works on infinite lists
+
+        ghci> takeWhile (<=4) [1,2,3,4,5]
+        [1,2,3,4]
+
+Lambdas  -  anonymous functions used only once
+         -  normally made to pass to a higher order function
+         -  uses '\' then parameters, dseparated by spaces
+         -  usually surrounded by parentheses
+
+        ghci> map (\(a,b) -> a + b) [(1,2),(3,5),(6,3),(2,6),(2,5)]  
+        [3,8,9,8,7]
+
+fold  -  takes a binary function, a starting value (accumulator), and a list
+      -  binary function itself calls 2 parameters, the accumulator and an element in the list
+      -  only the accumulator remains
+
+fold1  -  function that folds up the list from the left side
+       -  binary function calls the accumulator and the head of the list
+       -  creates a new accumulator value, which is called by the binary function along with the next element in the list
+
+foldr  -  function that folds up the list from the right side
+       -  binary function calls the accumulator and last of the list
+       -  creates a new accumulator value, which is called by the binary function along with the next element in the list
+
+foldll  -  works like foldl, but you don't need to provide an explicit starting value
+        -  assumes the first element of the list is the starting value (head)
+
+foldrl  -  works like foldr, but you don't need to provide an explicit starting value
+        -  assumes the last element of the list is the starting value (last)
+
+scanl  -  function that works like foldl, only it returns a list instead of a single value
+       -  reports all intermediate accumulator states in the form of a list
+       -  final result will be the last element of the resulting list (last)
+
+scanr  -  function that works like foldr, only it returns a list instead of a single value
+       -  reports all intermediate accumulator states in the form of a list
+       -  final result will be the first element of the resulting list (head)
+
+scanll  -  works like scanl, but you don't need to provide an explicit starting value
+        -  assumes the last element of the list is the starting value (last)
+
+scanrl  -  works like scanr, but you don't need to provide an explicit starting value
+        -  assumes the first element of the list is the starting value (head)
+
+function application  -  the $ function, also konwn as function application
+                      -  function application with a space is left associative
+                      -  function application with $ is right associative
+                      -  function application with $ is the lowest precedence (infixr 0)
+                      -  function application with a space has a high precedence
+                      -  low precedence means that $ is sort of the equivalent of writing a ( and then writing ) on the far right side of the expression
+
+        ghci> :t ($)
+        ($) :: (a -> b) -> a -> b
+        
+        f $ x = f x
+
+        f $ g $ h x = f (g (h(x)))
+                
+        f g h x = ((f g) h) x
+
+        sqrt (1 + 2 + 3 + 4 + 5) = sqrt $ 1 + 2 + 3 + 4 + 5 
+
+Function Composition  -  composing two functions produces a new function 
+                      -  (f o g) = f(g(x))
+                      -  is right associativem allowing you to compose many functions at a time
+                      -  f (f (z x)) = (f . g . z) x
+
+        ghci> :t (.)
+        (.) :: (b -> c) -> (a -> b) -> a -> c
+
+        f . g = \x -> f (g x)
+
+Point Free Style  -  currying allows us to remove the variable from both sides of a function
+                  -  common use of function composition
+
+        sum' :: (Num a) => [a] -> a     
+        sum' xs = foldl (+) 0 xs
+        sum' = foldl (+) 0
+
+        fn x = ceiling (negate (tan (cos (max 50 x)))) 
+        fn  = ceiling . negate . tan . cos . max 50  
+
+
+CHAPTER 7: MODULES
+
+Module  -  a collection of related functions, types and typeclasses
+
+Program  -  collection of modules 
+         -  where the main module loads up the other modules 
+         -  and then uses the functions defined in them to do something
+        
