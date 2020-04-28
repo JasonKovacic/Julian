@@ -2,6 +2,8 @@
 Haskell Notes
 
 
+
+
 CHAPTER 1-2 :  STARTING OUT
 
 Lazy Functions vs Strict functions (function’)
@@ -32,32 +34,36 @@ definition  - when a function doesn’t take parameters, that function is a defi
 		ghci> [1,2,3,4,5] !! 0
 		5
 
-head  -  takes a list and returns its head. The head of a list is its first element
+head  -  function that takes a list and returns its head. The head of a list is its first element
 
         ghci> head [1,2,3,4,5]  
         1 
 
-tail  -  takes a list and returns its tail. In other words, it chops off a list's head
+tail  -  function that takes a list and returns its tail 
+      -  tail function chops off a list's head
+      -  returns every element after the first
 
         ghci> tail [1,2,3,4,5]  
         [2,3,4,5]   
 
-last -  takes a list and returns its last element
+last -  function that takes a list and returns its last element
 
         ghci> last [1,2,3,4,5]
         5
 
-init  -  takes a list and returns everything except its last element
+init  -  function that takes a list and returns everything except its last element
         
         ghci> init [1,2,3,4,5]  
         [1,2,3,4] 
 
-length  -  takes a list and returns its length
+length  -  function that takes a list and returns its length
 
         ghci> length [1,2,3,4,5]
         5
 
-null  -  checks if a list is empty. If it is, it returns True, otherwise it returns False. 
+null  -  function that checks if a list is empty
+      -  If it is, it returns True, 
+         otherwise it returns False
 
         ghci> null [1,2,3,4,5]
         False
@@ -113,8 +119,10 @@ product  -  takes a list of numbers and returns their product
         ghci> product [1,2,3,4,5]
         120
 
-elem  -  takes a thing and a list of things and returns True if the thing is in the list 
-    False if the thing is not in the list.  Usually used as an infix function
+elem  -  function that takes an element and a list of elements
+      -  returns True if the thing is in the list 
+      -  returns False if the thing is not in the list
+      -  usually used as an infix function
 		
 		ghci> 1 ‘elem’ [1,2,3,4,5]
 		True
@@ -220,13 +228,20 @@ snd  -  takes a pair and returns its second component
         ghci> snd (a,b)
         b
 
-zip  -  takes two lists and puts them together in one list by joining the elements into pairs
+zip  -  function that takes two lists 
+        then puts them together in one list by joining the elements into pairs
+     -  zips together two lists, either in a tuple or with a binary function 
 
         ghci> zip [1,2,3,4,5] [a..z]
         [(1,a),(2,b),(3,c),(4,d),(5,e)]
 
         ghci> zip "Hello World" [1,2,3,4,5]
         [('H',1),('e',2),('l',3),('l',4),('o',5)]
+
+binary function  -  function that takes two parameters
+
+
+
 
 CHAPTER 3 : TYPES AND TYPECLASSES
 
@@ -408,6 +423,9 @@ fromIntegral  -  function that converts from Integral to Num
         ghci> fromIntegral (length [1,2,3,4,5]) + 3.2
         8.2
 
+
+
+
 CHAPTER 4: SYNTAX IN FUNCTIONS
 
 pattern matching
@@ -484,6 +502,7 @@ case expression  -  expressions
         describeList xs = "The list is " ++ case xs of [] -> "empty."  
                                                     [x] -> "a singleton list."   
                                                     xs -> "a longer list." 
+
 
 
 
@@ -709,11 +728,702 @@ Point Free Style  -  currying allows us to remove the variable from both sides o
         fn  = ceiling . negate . tan . cos . max 50  
 
 
+
+
 CHAPTER 7: MODULES
 
-Module  -  a collection of related functions, types and typeclasses
+Hakell module  -  a collection of related functions, types and typeclasses
 
-Program  -  collection of modules 
-         -  where the main module loads up the other modules 
-         -  and then uses the functions defined in them to do something
+Haskell program  -  collection of modules 
+                 -  where the main module loads up the other modules 
+                 -  and then uses the functions defined in them to do something
         
+Haskell standard library  -  split into modules 
+                          -  each module contains functions and types that are related nad serve a common purpose
+
+Prelude Module  -  the most important Haskell module
+                -  imported by default
+                -  contains most commonly used functions
+                -  all functions, types and typeclasses so far
+
+**  Import modules, which export functions to the global namespace  **                
+
+import <module name>  -  syntax for importing modules in Haskell script
+                      -  one script can import several modules
+                      -  once you import a module, all of the functions exported become available in the global namespace
+                      -  global namespace means you can call a function from anywhere in the script
+        
+        ghci> import Data.List 
+
+                      -  you can also load up modules with :m +
+                      
+        ghci> :m + Data.List
+
+        ghci> :m + Data.List Data.Map Data.set
+
+                      -  you can also load up specific functions from modules
+        
+        ghci> :m + Data.List (nub, sort)
+
+                      -  you can also import all of the funcitions from a module except a few select ones
+                      -  useful when importing modules which export multiple functions of the same name
+                      -  multiple functions referenced from different modules causes name clashing
+
+        ghci> :m + Data.List hiding (nub)
+
+nub  -  function that takes a list and weeds out duplicate elements
+
+        length . nub => \xs -> length (nub xs)
+
+import qualified <module name>  -  importing a module such that each function exported by that module is referenced
+                                -  to call a function from a qualified import, you have to write <module name>.function
+                
+        ghci>  import qualified Data.Map
+        ghci>  Data.Map.filter (>3) [1,2,3,4,5]
+        [4,5]
+
+        ghci>  import qualified Data.Map as M
+        ghci>  M.filter (>3) [1,2,3,4,5]
+        [4,5]
+
+
+
+Data.List  -  module providing useful functions for dealing with lists
+           -  don't have to import Data.List via qualified import because it doesn't clash with any Prelude names
+
+
+map  -  takes a function and a list
+     -  applies the function to every element in the list, producing a new list
+
+        ghci> map (+2) [1,2,3,4,5]
+        [3,4,5,6,7]
+
+        ghci> map (replicate 3) [1,2,3,4,5]
+        [(1,1,1),(2,2,2),(3,3,3),(4,4,4),(5,5,5)]
+
+predicate  -  function that returns a boolean value
+
+filter  -  function that takes a predicate and a list
+        -  applies the predicate to the list and returns a list of elements that satisfy the predicate
+        -  doesn't work on infinite lists  (takeWhile does though)
+
+        ghci> filter (>3) [1,2,3,4,5]
+        [4,5]
+
+        ghci> filter even [1,2,3,4,5]
+        [2,4]
+
+intersperse  -  function that takes an element and a list 
+             -  then puts that element inbetween each pair of elements in the list
+        
+        ghci> intersperse '.' "USMC"
+        "U.S.M.C"
+
+        ghci> intersperse ' ' "MOMMY"
+        "M O M M Y"
+
+intercalate  -  function that takes a list of lists and a list
+                then inserts that list in between all of those lists and then flattens the result
+
+        ghci> intercalate [0,0,0] [[1,2,3],[4,5,6],[7,8,9]]  
+        [1,2,3,0,0,0,4,5,6,0,0,0,7,8,9] 
+        
+        ghci> intercalate " " ["hey", "there", "guys"]
+        "hey there guys"
+
+transpose  -  function that takes a list of lists and transposes it
+           -  looking at a list of lists as a 2D matrix, 
+              the columns become the rows and the rows become the columns
+
+        ghci> transpose [[1,2,3],[4,5,6][7,8,9]]
+        [[1,4,7],[2,5,8],[3,6,9]]
+
+        ghci> ["hey","there","guys"]  
+        ["htg","ehu","yey","rs","e"]  
+
+        ** adding polynomials
+        [0, 3, 5, 9]  : 3x^2 + 5x + 9
+        [8, 5, 1, -1] : 8x^3 + 5x^2 + x - 1  
+        [10, 0, 0, 9] : 10x^3 + 9 
+
+        ghci> map sum $ transpose [[0,3,5,9],[10,0,0,9],[8,5,1,-1]]  
+        [18,8,6,17]  
+
+foldl'  -  stricter version of foldl
+        -  updates the accumulator value more often, avoiding stack overflow
+
+foldr'  -  stricter version of foldr
+        -  updates the accumulator value more often, avoiding stack overflow
+
+concat  -  flattens a list of lists into just a list of elements
+
+        ghci> concat ["moo", "cow", "4755"]
+        "moocow4755"
+
+        ghci> concat [[1,2,3].[4,5,6],[7,8,9]]
+        [1,2,3,4,5,6,7,8,9]
+
+concatMap  -  function that first maps a function to a list 
+              then concatenates the list with concat
+
+        ghci> concatMap (replicate 5) [1,2,3,4,5]
+        [1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5]
+
+and  -  takes a list of boolean values 
+        and returns True only if all of the values in the list are True
+
+        ghci> and $ map (>4) [5,6,7,8]
+        True
+
+        ghci> and $ map (>3) [1,2,3,4,5]
+        False
+
+or  -  takes a list of boolean values
+       and returns True if any of the values in the list are True
+
+        ghci> or $ map (>3) [1,2,3,4,5]
+        True
+
+any  -  function that takes a predicate 
+        and then checks if any of the elements satisfy the predicate
+        
+        ghci> any (==4) [2,3,5,6,1,4]  
+        True  
+
+        ghci> any (`elem` ['A'..'Z']) "HEYGUYSwhatsup"  
+        True  
+
+all  -  function that takes a predicate 
+        and then checks if all of the elements satisfy the predicate
+        
+        ghci> all (>4) [6,9,10]  
+        True
+
+        ghci> all (`elem` ['A'..'Z']) "HEYGUYSwhatsup"  
+        False  
+
+iterate  -  function that takes a function and a starting value 
+         -  applies the function to the starting value
+            then applies the funciton to that result
+            then applies the function to that result again, et cetera
+         -  returns all the results in the form of an infinite list
+
+        ghci> take 10 $ iterate (*2) 1
+        [1,2,4,8,16,32,64,128,256,512]
+
+        ghci> take 3 $ iterate (++ "haha") "haha"
+        ["haha","hahahahaha","hahahahahaha"]
+
+splitAt  -  function that takes a number and a list
+            then splits the list at that many elements
+            returning the resulting two lists in a tuple
+
+        ghci> splitAt 3 "Hello World!"
+        ("Hel","lo World!")
+
+        ghci> splitAt 100 "Hello World!"
+        ("Hello World!"," ")
+
+takeWhile  -  function that takes elements from a list while the predicate is true
+              then when the predicate isn't satisfied, it's cut off, 
+              returning all the first elements in the list that did satisfy the predicate 
+
+        ghci> takeWhile (<4) [1,2,3,4,5]
+        [1,2,3]
+
+        ghci> takeWhile (/=' ') "Hello World"
+        "Hello"
+
+dropWhile  -  function that takes elements from a list while the predicate is True
+              then when the predicate isn't satisfied, 
+              it returns the rest of the list 
+
+        ghci> dropWhile (/=' ') "This is a sentence"  
+        " is a sentence"  
+        
+        ghci> dropWhile (<3) [1,2,2,2,3,4,5,4,3,2,1]  
+        [3,4,5,4,3,2,1]
+
+span  -  function that takes elements from a list while the predicate is True
+         then when the predicate isn't satisfied, it returns a pair of lists
+      -  the first list contains everything that did satisfy the predicate (what takewhile returns)
+      -  the second list contains the part of the list that would have been dropped (what dropWhile returns)
+
+        ghci> ghci> span (/=3) [1,2,3,4,5]  
+        ([1,2],[3,4,5]) 
+
+break  -  function that takes elements from a list while the predicate is False
+          then when the predicate is satisfied, it returns a pair of lists
+       -  the first list contains everything that didn't satisfy the predicate
+       -  the second list contains the rest of the list 
+        
+        ghci> break (==4) [1,2,3,4,5,6,7]  
+        ([1,2,3],[4,5,6,7])
+
+sort  -  function that simply sorts a list
+      -  the type of elements in the list has to be part of the Ord typeclass
+
+        ghci> sort [8,5,3,2,1,6,4,2]  
+        [1,2,2,3,4,5,6,8]  
+        
+        ghci> sort "This will be sorted soon"  
+        "    Tbdeehiillnooorssstw"
+
+group  -  function that takes a list 
+          and groups adjacent elements into sublists if they are equal
+        
+        ghci> group [1,1,1,1,2,2,2,2,3,3,2,2,2,5,6,7]  
+        [[1,1,1,1],[2,2,2,2],[3,3],[2,2,2],[5],[6],[7]]  
+
+inits  -  function that takes a list and returns everything except its last element
+       -  function is recursively applied until there's nothing left
+
+        ghci> inits "Hello!"
+        ["","H","He","Hel","Hell","Hello","Hello!"]
+
+tails  -  function that takes a list and returns everything except its first element
+       -  function is recursively applied until there's nothing left
+
+        ghci> tails "Hello!"
+        ["Hello!","ello!","llo!","lo!","o!","!",""]
+
+isInfixOf  -  function that searches for a sublist whithin a list 
+              returns True if the sublist we're looking for is somewhere inside the target list
+        
+        ghci> "cat" `isInfixOf` "im a cat burglar"  
+        True  
+        ghci> "Cat" `isInfixOf` "im a cat burglar"  
+        False
+
+isPrefixOf  -  function that searches for a sublist at the beginning of a list
+
+        ghci> "hey" `isPrefixOf` "hey there!"  
+        True  
+        ghci> "hey" `isPrefixOf` "oh hey there!"  
+        False  
+
+isSuffixOf  -  function that searches for a sublist at the end of a list
+
+        ghci> "there!" `isSuffixOf` "oh hey there!"  
+        True  
+        ghci> "there!" `isSuffixOf` "oh hey there"  
+        False  
+
+elem  -  function that checks if an element is in a list
+
+nonElem  -  function that checks if an element is not in a list
+
+partition  -  function that takes a list and a predicate and returns a pair of lists
+           -  first list in the results are elements that satisfy the predicate
+           -  second list in the results are elements that don't satisfy the predicate
+
+        ghci> partition (`elem` ['A'..'Z']) "BOBsidneyMORGANeddy"  
+        ("BOBMORGAN","sidneyeddy") 
+
+        ghci> partition (>3) [1,3,5,6,3,2,1,0,3,7]  
+        ([5,6,7],[1,3,3,2,1,0,3])
+
+Maybe value  -  algebraic data type 
+             -  can be either no elements or a single element
+             -  can either be Nothing or Just something
+
+find  -  function that takes a list and predicate 
+      -  returns the first element that satisfies the predicate
+      -  element is wrapped in a Maybe value
+
+        ghci> find (>4) [1,2,3,4,5,6]  
+        Just 5  
+
+        ghci> find (>9) [1,2,3,4,5,6]  
+        Nothing  
+        
+        ghci> :t find  
+        find :: (a -> Bool) -> [a] -> Maybe a 
+
+elemIndex  -  function that takes an element and a list of elements
+           -  maybe returns the index of the element we're looking for
+           
+        ghci> :t elemIndex  
+        elemIndex :: (Eq a) => a -> [a] -> Maybe Int  
+        
+        ghci> 4 `elemIndex` [1,2,3,4,5]  
+        Just 3  
+        
+        ghci> 10 `elemIndex` [1,2,3,4,5]  
+        Nothing 
+
+elemIndeces  -  function that takes an element and a list of elements
+             -  returns a list of indices of the element we're looking for
+             -  don't need the maybe data type, because Nothing can be represented as an empty list
+        
+        ghci> ' ' `elemIndices` "Where are the spaces?"  
+        [5,9,13]  
+
+findIndex  -  function that takes an element and a list of elements
+           -  returns the index of the first element that satisfies the predicate
+        
+        ghci> findIndex (==4) [1,2,3,4,5]  
+        Just 3
+        
+        ghci> findIndex (==7) [1,2,3,4,5]  
+        Nothing 
+
+findIndices  -  function that takes an element and a list of elements
+             -  returns a list of indices of all elements that satisfy the predicate
+
+        ghci> findIndices (`elem` ['A'..'Z']) "Where Are The Caps?"  
+        [0,6,10,14]
+
+zip3  -  function that takes three lists 
+         then puts them together in one list by joining the elements into pairs
+
+
+zip4...zip7  -  same as zip three but taking 4, 5, 6, or 7 lists
+
+        ghci> zip4 [2,3,3] [2,2,2] [5,5,3] [2,2,2]  
+        [(2,2,5,2),(3,2,5,2),(3,2,3,2)]
+
+zipWith3  - 
+        
+        ghci> zipWith3 (\x y z -> x + y + z) [1,2,3] [4,5,2,2] [2,2,3]  
+        [7,9,8] 
+
+zipWith4...zipWith7  -  
+
+lines  -  function that takes a string
+          returns every line of that string in a separate list
+       -  useful for dealing with files or input from somewhere
+
+       ghci> lines "first line\nsecond line\nthird line"  
+        ["first line","second line","third line"]  
+
+unlines  -  function that takes a list of strings and joins them together using a '\n'
+         -  inverse function of lines
+
+        ghci> unlines ["first line", "second line", "third line"]  
+        "first line\nsecond line\nthird line\n"
+
+words  -  function that splits a line of text into words
+
+        ghci> words "hey these are the words in this sentence"  
+        ["hey","these","are","the","words","in","this","sentence"]  
+        
+        ghci> words "hey these           are    the words in this\nsentence"
+
+unwords  -  function that joins a list of words into a line of text
+
+        ghci> unwords ["hey","there","mate"]  
+        "hey there mate" 
+
+delete  -  function that takes an element and a list
+           and deletes the first occurence of that element in the list
+
+\\  -  the list difference function 
+    -  for every element in the right-hand list, 
+       it removes a matching element from the left one
+
+        ghci> [1..10] \\ [2,5,9]  
+        [1,3,4,6,7,8,10]  
+        
+        ghci> "Im a big baby" \\ "big"  
+        "Im a  baby"  
+
+union  -  function that takes two lists
+          and returns the union of the two lists
+
+        ghci> [1..7] `union` [5..10]  
+        [1,2,3,4,5,6,7,8,9,10]  
+        
+        ghci> "hey man" `union` "man what's up"  
+        "hey manwt'sup"  
+
+intersect  -  function that takes two lists
+              and returns a list of elements that are found in both lists
+
+        ghci> [1..7] `intersect` [5..10]  
+        [5,6,7]  
+
+insert  -  function that takes an element and a list of elements that can be sorted
+           and inserts the element into the list of elements in order
+        -  inserts the element into the last position where it's still <= the next element in the list
+        -  starts at the beginning of the list and checks every element 
+           until it finds one equal to or greater than the element we're inserting
+           and then inserts it before the element
+
+        ghci> insert 4 [1,2,3,5,6,7]  
+        [1,2,3,4,5,6,7]  
+       
+        ghci> insert 'g' $ ['a'..'f'] ++ ['h'..'z']  
+        "abcdefghijklmnopqrstuvwxyz"  
+       
+        ghci> insert 3 [1,2,4,3,2,1]  
+        [1,2,3,4,3,2,1]
+
+ genericLength  -  
+ genericTake  -  
+ genericDrop  -  
+ genericSplitAt  -  
+ genericIndex  -  
+ genericReplicate  -  functions in Data.List 
+                      that are generic equivalents for take, drop, splitAt, !! and replicate
+                   -  take any type that's part of the Integral or Num typeclasses
+                   -  generic counterparts take and return Int
+
+nubBy  -
+deleteBy  -
+intersectBy  -
+groupBy  -  functions in Data.List
+            that are the generic equivalents of nub, delete, union, intersect and group
+         -  take an equality function and then compare them by using that equality function
+         -  generic equivalents use == to test for equality
+
+on  -  function that transforms two inputs and combines the outputs
+       (+) `on` f) x y = f x + f y
+    -  or runs the binary function b on the results of applyin unary function u to two arguments x and y
+       on b u x y
+    -  typically used with sortBy
+        on :: (b -> b -> c) -> (a -> b) -> a -> a -> c  
+        
+        f `on` g = \x y -> f (g x) (g y)
+
+        (==) 'on' (> 0) = \x y -> (x > 0) == (y > 0)
+
+sortBy  -
+insertBy  -
+maximumBy  -
+minimumBy  -  functions in Data.List
+              that are the generic equivalents of sort, insert, maximum and minimum
+           -  take a function that determines when one element is greater, smaller, or equal to another element
+
+
+
+Data.Char  -  module that exports functions that deal with characters
+           -  helpful when filtering and mapping over strings 
+           -  strings are just lists of characters
+           -  exports predicates over characters
+           -  functions that take a character and tell us wheather some assumption is True or False
+
+isControl  -  predicate that checks whether a character is a control characters
+        
+isSpace  -  predicate that checks whether a charcter is a white-space character
+
+white-space character  -  spaces, tab characters, newlines et cetera
+
+isLower  -  predicate that checks whether a character is lower case
+
+isUpper  -  predicate that checks whether a character is upper case
+
+isAlpha  -  predicate that checks whether a character is a letter
+
+isAlphaNum  -  predicate that checks whether a character is a letter or a number
+
+isPrint  -  predicate that checks whether a character is printable
+         -  control characters are not printable par examplf
+
+isDigit  -  predicate that checks whether a character is a digit
+
+isOctDigit  -  predicate that checks whether a character is an octal digit
+
+isHexDigit  -  predicate that checks whether a character is a hex digit
+
+isLetter  -  predicate that checks whether a character is a letter
+          -  GeneralCategorys:
+             UppercaseLetter
+             LowercaseLetter
+             TitlecaseLetter
+             ModifierLetter
+             OtherLetter
+
+isMark  -  predicate that checks whether a character is a Unicode mark character
+        -  Unicode mark characters are characters that combine with preceding letters to form latters with accents
+        -  GeneralCategorys:
+           NonSpacingMark
+           SpacingCombiningMark
+           EnclosingMark
+
+isNumber  -  predicate that checks whether a character is numeric
+          -  GeneralCategorys:
+             Decimal number
+             Letter number
+             Other number
+
+isPunctuation  -  predicate that checks whether a character is punctuation
+               -  GeneralCategorys
+                  ConnectorPunctuation
+                  DashPunctuation
+                  OpenPunctuation
+                  ClosePunctuation
+                  InitialQuote
+                  FinalQuote
+                  OtherPunctuation
+
+isSymbol  -  predicate that checks whether a character is a symbol
+          -  GeneralCategorys:
+             MathSymbol
+             CurrencySymbol
+             ModifierSymbol
+             OtherSymbol
+
+isSeparator  -  predicate that checks whether a character is a Unicode space or separator
+             -  GeneralCategorys:
+                Space
+                Line Separator
+                ParagraphSeparator
+
+isAscii  -  predicate that checks whether a character falls into the first 128 characters of the Unicode character set
+
+isLatin1  -  predicate that checks whether a character falls into the first 256 characters of Unicode
+
+isAsciiUpper  -  predicate that checks whether a character is Ascii and upper case
+
+isAsciiLower  -  predicate that checks whether a character is Ascii and lower case
+
+**  All of these predicates have the type signature Char -> Bool  **
+**  Use this predicates in combination with functions from Data.List **
+
+        ghci> all isAlphaNum "bobby283"  
+        True  
+
+        ghci> all isAlphaNum "eddy the fish!"  
+        False  
+
+GeneralCategory  -  type that is an enumeration
+                 -  returns few possible categories that a character can fall into
+                 -  there are 31 GeneralCategorys 
+                    all of which are listed above in the predicate definitions
+
+        generalCategory :: Char -> GeneralCategory
+
+toUpper  -  function that converts a character to upper case
+         -  spaces, numbers etc remain unchanged
+
+toLower  -  function that converts a character to lower-case
+
+toTitle  -  function that converts a character to title case
+         -  title case is the same as upper case for most characters
+
+digitToInt  -  function that converts a character to an Int 
+            -  character must be in the ranges '0'..'9', 'a'..'f', 'A'..'F'
+
+inToDigit  -  function that takes an Int in the ramge of 0..15  
+              and converts it to a lower-case character
+           -  inverse function of digitToInt
+
+ord  -  function that converts characters to their corresponding numbers 
+
+        ghci> ord 'a'
+        97
+
+chr  -  function that converts numbers to their corresponding characters
+
+        ghci> chr 97
+        'a'
+
+
+
+Data.Map  -  module that offeres association lists that are faster
+             because they're internally implemented with trees
+          -  intended to be imported qualified, to avoid name clashes with Prelude functions, e.g
+        
+        ghci> import qualified Data.Map as Map
+
+association lists  -  lists that are used to store key-value pairs where ordering doesn't matter 
+                   -  also known as 'dictionaries'
+         
+
+        phoneBook =   
+                [("betty","555-2938")  
+                ,("bonnie","452-2928")  
+                ,("patsy","493-2928")  
+                ,("lucille","205-2928")  
+                ,("wendy","939-8282")  
+                ,("penny","853-2492")  
+                ]  
+
+fromList  -  function that takes an association list in the form of a list
+             and returns a map with the same associations
+          -  if there are duplicate keys in the original list,
+             the duplicates are discarded
+
+        Map.fromList :: (Ord k) => [(k, v)] -> Map.Map k v  
+
+empty  -  function that represents an empty map
+       -  takes no arguments
+       -  just returns an empty map
+
+        ghci> Map.empty  
+        fromList []
+
+insert  -  function that takes a key, a value and a map
+           and returns a new map that's just like the old one,
+           only with the key and value inserted
+
+null  -  function that checks if a map is empty
+
+        ghci> Map.null Map.empty  
+        True  
+        
+        ghci> Map.null $ Map.fromList [(2,3),(5,5)]  
+        False 
+
+size  -  function that reports the size of a map
+
+        ghci> Map.size Map.empty  
+        0  
+        
+        ghci> Map.size $ Map.fromList [(2,4),(3,3),(4,2),(5,4),(6,4)]  
+        5 
+
+singelton  -  function that takes a key and a value
+              and creates a map that has exactly one mapping
+
+        ghci> Map.singleton 3 9  
+        fromList [(3,9)] 
+
+        ghci> Map.insert 5 9 $ Map.singleton 3 9  
+        fromList [(3,9),(5,9)]  
+
+lookup  -  function that works like Data.List lookup
+           only it operates on maps
+        -  returns Just something if it finds something for the key
+           returns Nothing if it doesn't
+
+member  -  a predicate that takes a key and a map
+           and reports whether the key is in the map or not
+
+        ghci> Map.member 3 $ Map.fromlist [(3,4),(4,3),6,9)]
+        True
+
+        ghci> Map.member 3 $ Map.fromList [(2,5),(4,5)]
+        False
+
+predicate  -  function that returns a boolean value
+
+map  -  takes a function and a list
+     -  applies the function to every element in the list, producing a new list
+
+        ghci> map (+2) [1,2,3,4,5]
+        [3,4,5,6,7]
+
+        ghci> map (replicate 3) [1,2,3,4,5]
+        [(1,1,1),(2,2,2),(3,3,3),(4,4,4),(5,5,5)]
+
+filter  -  function that takes a predicate and a list
+        -  applies the predicate to the list and returns a list of elements that satisfy the predicate
+        -  doesn't work on infinite lists  (takeWhile does though)
+
+        ghci> filter (>3) [1,2,3,4,5]
+        [4,5]
+
+toList  -  function that is the inverse of fromList
+
+        ghci> Map.toList . Map.insert 9 2 $ Map.singleton 4 3  
+        [(4,3),(9,2)]
+
+keys  -  function that returns list of keys
+      -  equivalent of map snd . Map.toList
+
+elems  -  function that returns list of values 
+       -  equivalent of map fst  . Map.toList
+
+fromListWith 
