@@ -1,0 +1,47 @@
+Cube Algoritm Project
+
+1. Remove x rotations from beginning of list
+    - remove head?  some algs don't have x rotations
+    - remove all x, x', and x2?  can't do x first (x2, x', x)
+    - 
+2. Remove (12sq) from end of list
+    - remove (9sq), (10sq).. individually?
+    - find and remove everything in ()?
+    - leave it?
+
+3. Combine Moves
+    - M M => M2, M' M' => M2
+    - U U => U2, U' U' => U2
+    - R' M => r', M R' => r'
+    - R M' => r, M' R => r
+
+4. Changing Orientation *** Hardest Challenge ***
+    - changing R to l
+    - changing every move after
+    - R B2 U' B2 => l U2 F' U2
+    - find and replace everything after the R => l change, nothing before
+    - changing R' to l'
+    - changing L to r
+    - changing L' to r'
+
+4. Making New Lists   
+    - everything after the orientation change will be in a new list
+    - everything in the new list will be changed orientation-wise again, and a new list made
+    - all lists will be accessible in the same document, then sorted
+
+5. Sorting Lists
+    - all algs starting with M, M', M2
+    - all algs ending with M, M', M2
+    - M, M', and M2 algs can be ommitted from the end of algs
+
+    - all algs starting with R, R', L, L', r, r', l, l'
+    - all algs ending with R, R', L, L', r, r', l, l'
+    - all algs starting with U, U', U2
+    - all algs ending with U, U', U2
+    - algs ending with U, U', U2 are advantageous for midge permutation
+    - algs ending with U, U', U2 are advantageous for Waterman L7E cases
+
+
+
+
+    
